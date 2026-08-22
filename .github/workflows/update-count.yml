@@ -1,0 +1,33 @@
+name: Update Bravery Count
+
+on:
+  repository_dispatch:
+    types: [update-count]
+
+permissions:
+  contents: write
+
+jobs:
+  update-count:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Write new count
+        env:
+          COUNT: ${{ github.event.client_payload.count }}
+        run: |
+          if ! [[ "$COUNT" =~ ^[0-9]+$ ]]; then
+            echo "Invalid count payload: '$COUNT'" >&2
+            exit 1
+          fi
+          echo "{\"count\": $COUNT}" > count.json
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add count.json
+          git diff --cached --quiet && echo "No change" && exit 0
+          git commit -m "Update bravery count to ${{ github.event.client_payload.count }}"
+          git push

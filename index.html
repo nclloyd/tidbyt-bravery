@@ -407,65 +407,61 @@
 
   const CHECK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L10 18 L20 6"/></svg>`;
 
-  const params = new URLSearchParams(window.location.search);
-  const hasCount = params.has('count');
-  const count = Math.max(0, parseInt(params.get('count') || '0', 10) || 0);
-
-  document.getElementById('countNumber').textContent = count;
-
-  const MAX = MILESTONES[MILESTONES.length - 1].threshold;
-  const nextMilestone = MILESTONES.find(m => count < m.threshold);
   const ring = document.getElementById('ringProgress');
   const CIRC = 2 * Math.PI * 46;
   ring.style.strokeDasharray = String(CIRC);
-
   const heroStatus = document.getElementById('heroStatus');
   const heroHint = document.getElementById('heroHint');
+  const MAX = MILESTONES[MILESTONES.length - 1].threshold;
 
-  if (!hasCount) {
-    heroStatus.textContent = 'Open this from the Bravery Shortcut to see the latest count.';
-    ring.style.strokeDashoffset = String(CIRC);
-  } else if (nextMilestone) {
-    const remaining = nextMilestone.threshold - count;
-    heroStatus.innerHTML = `<strong>${remaining}</strong> more brave ${remaining === 1 ? 'moment' : 'moments'} to go`;
-    heroHint.textContent = `Next up: ${nextMilestone.prize}`;
-    const ratio = Math.min(1, count / MAX);
-    ring.style.strokeDashoffset = String(CIRC * (1 - ratio));
-  } else {
-    heroStatus.textContent = 'Every prize earned! Time for something extra special.';
-    ring.style.strokeDashoffset = '0';
-  }
+  function renderCount(count, ok) {
+    document.getElementById('countNumber').textContent = count;
+    const nextMilestone = MILESTONES.find(m => count < m.threshold);
 
-  const list = document.getElementById('milestoneList');
-  MILESTONES.forEach(m => {
-    const done = count >= m.threshold;
-    const isCurrent = !done && nextMilestone && m.threshold === nextMilestone.threshold;
-    const state = done ? 'done' : isCurrent ? 'current' : 'upcoming';
+    if (!ok) {
+      heroStatus.textContent = "Couldn't load the latest count — showing the last known value.";
+      ring.style.strokeDashoffset = String(CIRC * (1 - Math.min(1, count / MAX)));
+    } else if (nextMilestone) {
+      const remaining = nextMilestone.threshold - count;
+      heroStatus.innerHTML = `<strong>${remaining}</strong> more brave ${remaining === 1 ? 'moment' : 'moments'} to go`;
+      heroHint.textContent = `Next up: ${nextMilestone.prize}`;
+      const ratio = Math.min(1, count / MAX);
+      ring.style.strokeDashoffset = String(CIRC * (1 - ratio));
+    } else {
+      heroStatus.textContent = 'Every prize earned! Time for something extra special.';
+      ring.style.strokeDashoffset = '0';
+    }
 
-    const el = document.createElement('div');
-    el.className = `milestone milestone--${state}`;
-    el.innerHTML = `
-      <div class="milestone__node">${done ? CHECK_ICON.replace('width="24" height="24"', 'width="14" height="14"') : m.threshold}</div>
-      <div class="milestone__card">
-        <div class="milestone__icon">${m.icon}</div>
-        <div class="milestone__body">
-          <p class="milestone__threshold">${m.threshold} brave moments</p>
-          <p class="milestone__prize">${m.prize}</p>
+    const list = document.getElementById('milestoneList');
+    list.innerHTML = '';
+    MILESTONES.forEach(m => {
+      const done = count >= m.threshold;
+      const isCurrent = !done && nextMilestone && m.threshold === nextMilestone.threshold;
+      const state = done ? 'done' : isCurrent ? 'current' : 'upcoming';
+
+      const el = document.createElement('div');
+      el.className = `milestone milestone--${state}`;
+      el.innerHTML = `
+        <div class="milestone__node">${done ? CHECK_ICON.replace('width="24" height="24"', 'width="14" height="14"') : m.threshold}</div>
+        <div class="milestone__card">
+          <div class="milestone__icon">${m.icon}</div>
+          <div class="milestone__body">
+            <p class="milestone__threshold">${m.threshold} brave moments</p>
+            <p class="milestone__prize">${m.prize}</p>
+          </div>
+          <div class="milestone__check">${CHECK_ICON}</div>
         </div>
-        <div class="milestone__check">${CHECK_ICON}</div>
-      </div>
-    `;
-    list.appendChild(el);
-  });
+      `;
+      list.appendChild(el);
+    });
 
-  // trail fill height, measured after layout
-  requestAnimationFrame(() => {
-    const nodes = document.querySelectorAll('.milestone__node');
-    const trail = document.querySelector('.trail');
-    const trailRect = trail.getBoundingClientRect();
-    let fillTo = 0;
+    // trail fill height, measured after layout
+    requestAnimationFrame(() => {
+      const nodes = document.querySelectorAll('.milestone__node');
+      const trail = document.querySelector('.trail');
+      const trailRect = trail.getBoundingClientRect();
+      let fillTo = 0;
 
-    if (hasCount) {
       let lastDoneIndex = -1;
       MILESTONES.forEach((m, i) => { if (count >= m.threshold) lastDoneIndex = i; });
 
@@ -485,10 +481,32 @@
         const nodeY = node.getBoundingClientRect().top - trailRect.top + node.offsetHeight / 2;
         fillTo = prevY + (nodeY - prevY) * progressWithinSpan;
       }
-    }
 
-    document.getElementById('trailFill').style.height = Math.max(0, fillTo) + 'px';
-  });
+      document.getElementById('trailFill').style.height = Math.max(0, fillTo) + 'px';
+    });
+  }
+
+  // A ?count= in the URL always wins (handy for testing/sharing a specific
+  // state); otherwise fetch the live count.json this page sits next to,
+  // which the Bravery Shortcut keeps updated via a GitHub Actions workflow.
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('count')) {
+    renderCount(Math.max(0, parseInt(params.get('count'), 10) || 0), true);
+  } else {
+    heroStatus.textContent = 'Loading current count…';
+    fetch(`count.json?t=${Date.now()}`, { cache: 'no-store' })
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        const count = Math.max(0, parseInt(data.count, 10) || 0);
+        renderCount(count, true);
+      })
+      .catch(() => {
+        renderCount(0, false);
+      });
+  }
 
   // ambient starfield
   const field = document.getElementById('starfield');
