@@ -15,7 +15,7 @@ jobs:
 
       - name: Write new count
         env:
-          COUNT: ${{ github.event.client_payload.count }}
+          COUNT: "${{ github.event.client_payload.count }}"
         run: |
           if ! [[ "$COUNT" =~ ^[0-9]+$ ]]; then
             echo "Invalid count payload: '$COUNT'" >&2
