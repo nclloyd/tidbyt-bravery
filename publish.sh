@@ -15,4 +15,7 @@ MSG="${1:-Update Bravery Trail page}"
 git add -A
 git commit -m "$MSG"
 git push
-echo "Published. Live in ~30-60s at https://nclloyd.github.io/tidbyt-bravery/"
+
+CACHEBUST=$(date +%s)
+echo "Published. Live in ~30-60s (GitHub's CDN caches for 10 min, so use this link to skip the wait):"
+echo "https://nclloyd.github.io/tidbyt-bravery/?v=$CACHEBUST"
