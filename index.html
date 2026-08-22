@@ -1,0 +1,506 @@
+<meta charset="UTF-8">
+<title>Isaac &amp; Lyle's Bravery Trail</title>
+<style>
+  /* ---------------------------------------------------------------
+     Design plan
+     Color   — night-sky world, deliberately single-theme (dark):
+               navy-950 #0F1129 (ground), navy-800 #1C2050 (surface),
+               navy-700 #262B63 (border/hover), gold-400 #FFD23C
+               (stars/achieved — echoes the Tidbyt display), coral-400
+               #FF7A5C (bravery energy / current marker), ink-100
+               #F2F1FB (text), ink-400 #9599C7 (muted text).
+     Type    — Baloo 2 (rounded, bold, playful) for display/numbers;
+               Karla (warm grotesque) for body copy; Karla uppercase
+               + letter-spacing for small labels.
+     Layout  — mobile-first single column. Hero: big glowing count +
+               progress toward next star. Below: a vertical winding
+               trail of 5 star-nodes (10→50), each a milestone card
+               with a hand-drawn line-icon, connected by a glowing
+               trail that fills gold up to current progress. Ambient
+               twinkling starfield behind everything.
+     --------------------------------------------------------------- */
+
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+  :root {
+    --navy-950: #0f1129;
+    --navy-900: #141737;
+    --navy-800: #1c2050;
+    --navy-700: #262b63;
+    --gold-400: #ffd23c;
+    --gold-300: #ffe27a;
+    --coral-400: #ff7a5c;
+    --coral-300: #ff9a82;
+    --ink-100: #f2f1fb;
+    --ink-400: #9599c7;
+    --ink-500: #7a7fb0;
+
+    --font-display: 'Baloo 2', ui-rounded, 'Segoe UI Rounded', system-ui, sans-serif;
+    --font-body: 'Karla', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: var(--navy-950);
+    color: var(--ink-100);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ---------- ambient starfield ---------- */
+
+  #starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .star-dot {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--ink-100);
+    opacity: 0.35;
+    animation: twinkle 4.5s ease-in-out infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.75; }
+  }
+
+  /* ---------- layout shell ---------- */
+
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 30rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 5rem;
+  }
+
+  /* ---------- hero ---------- */
+
+  .hero {
+    text-align: center;
+    padding-bottom: 2.25rem;
+  }
+
+  .hero__eyebrow {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-300);
+    margin: 0 0 0.6rem;
+  }
+
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.7rem, 7vw, 2.3rem);
+    line-height: 1.15;
+    text-wrap: balance;
+    margin: 0 0 1.75rem;
+    color: var(--ink-100);
+  }
+
+  .count-badge {
+    position: relative;
+    width: 11.5rem;
+    height: 11.5rem;
+    margin: 0 auto 1.25rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .count-badge__glow {
+    position: absolute;
+    inset: -1.5rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 210, 60, 0.28) 0%, rgba(255, 210, 60, 0) 70%);
+  }
+
+  .count-badge__ring {
+    position: absolute;
+    inset: 0;
+  }
+
+  .count-badge__number {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 4.2rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--gold-400);
+    text-shadow: 0 0 28px rgba(255, 210, 60, 0.55);
+  }
+
+  .hero__status {
+    font-size: 1.0625rem;
+    color: var(--ink-100);
+    margin: 0;
+  }
+
+  .hero__status strong {
+    color: var(--coral-300);
+    font-weight: 700;
+  }
+
+  .hero__hint {
+    font-size: 0.875rem;
+    color: var(--ink-500);
+    margin: 0.4rem 0 0;
+  }
+
+  /* ---------- trail ---------- */
+
+  .trail {
+    position: relative;
+    padding-left: 2.75rem;
+  }
+
+  .trail::before {
+    content: '';
+    position: absolute;
+    left: 1.05rem;
+    top: 1.75rem;
+    bottom: 1.75rem;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--navy-700);
+  }
+
+  .trail__fill {
+    position: absolute;
+    left: 1.05rem;
+    top: 1.75rem;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--gold-400), var(--coral-400));
+    transition: height 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 0 12px rgba(255, 210, 60, 0.5);
+  }
+
+  .milestone {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .milestone:last-child { margin-bottom: 0; }
+
+  .milestone__node {
+    position: absolute;
+    left: -2.75rem;
+    top: 1.5rem;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--navy-800);
+    border: 2px solid var(--navy-700);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.8125rem;
+    color: var(--ink-400);
+    z-index: 1;
+    transition: background 400ms ease, border-color 400ms ease, color 400ms ease, box-shadow 400ms ease;
+  }
+
+  .milestone--done .milestone__node,
+  .milestone--current .milestone__node {
+    background: var(--gold-400);
+    border-color: var(--gold-300);
+    color: var(--navy-950);
+    box-shadow: 0 0 16px rgba(255, 210, 60, 0.6);
+  }
+
+  .milestone--current .milestone__node {
+    background: var(--coral-400);
+    border-color: var(--coral-300);
+    color: var(--navy-950);
+    box-shadow: 0 0 18px rgba(255, 122, 92, 0.65);
+  }
+
+  .milestone__card {
+    background: var(--navy-800);
+    border: 1px solid var(--navy-700);
+    border-radius: 1rem;
+    padding: 1rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    transition: border-color 400ms ease, background 400ms ease;
+  }
+
+  .milestone--done .milestone__card {
+    border-color: rgba(255, 210, 60, 0.45);
+    background: linear-gradient(135deg, rgba(255, 210, 60, 0.1), var(--navy-800) 60%);
+  }
+
+  .milestone--current .milestone__card {
+    border-color: rgba(255, 122, 92, 0.55);
+    background: linear-gradient(135deg, rgba(255, 122, 92, 0.14), var(--navy-800) 60%);
+  }
+
+  .milestone__icon {
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    display: grid;
+    place-items: center;
+    color: var(--gold-400);
+  }
+
+  .milestone--upcoming .milestone__icon { color: var(--ink-500); }
+
+  .milestone__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .milestone__body { flex: 1; min-width: 0; }
+
+  .milestone__threshold {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    margin: 0 0 0.15rem;
+  }
+
+  .milestone--done .milestone__threshold,
+  .milestone--current .milestone__threshold { color: var(--gold-300); }
+
+  .milestone__prize {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.0625rem;
+    color: var(--ink-100);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .milestone--upcoming .milestone__prize { color: var(--ink-400); }
+
+  .milestone__check {
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--gold-400);
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 400ms ease, transform 400ms ease;
+  }
+
+  .milestone--done .milestone__check {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 1.25rem 2.5rem;
+    color: var(--ink-500);
+    font-size: 0.8125rem;
+  }
+</style>
+
+<div id="starfield"></div>
+
+<main>
+  <section class="hero">
+    <p class="hero__eyebrow">Bravery Trail</p>
+    <h1 class="hero__title">Isaac &amp; Lyle's<br>Bravery Trail</h1>
+
+    <div class="count-badge">
+      <div class="count-badge__glow"></div>
+      <svg class="count-badge__ring" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#262b63" stroke-width="5"></circle>
+        <circle id="ringProgress" cx="50" cy="50" r="46" fill="none" stroke="#ffd23c" stroke-width="5"
+                stroke-linecap="round" transform="rotate(-90 50 50)"></circle>
+      </svg>
+      <span class="count-badge__number" id="countNumber">0</span>
+    </div>
+
+    <p class="hero__status" id="heroStatus">Loading&hellip;</p>
+    <p class="hero__hint" id="heroHint"></p>
+  </section>
+
+  <section class="trail" aria-label="Milestone prizes">
+    <div class="trail__fill" id="trailFill"></div>
+    <div id="milestoneList"></div>
+  </section>
+</main>
+
+<footer>Every act of courage adds a star. Keep going. ⭐</footer>
+
+<script>
+  const MILESTONES = [
+    {
+      threshold: 10,
+      prize: 'Trip to the ice cream shop',
+      icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 20 L24 40 L32 20 Z"/>
+        <path d="M14 20 a10 9 0 0 1 20 0 Z"/>
+        <path d="M19 15.5 a3 3 0 0 1 5-2"/>
+      </svg>`
+    },
+    {
+      threshold: 20,
+      prize: 'Family movie night, their pick',
+      icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="7" y="14" width="34" height="24" rx="3"/>
+        <path d="M7 21 L41 21"/>
+        <path d="M13 14 L17 21 M22 14 L26 21 M31 14 L35 21"/>
+      </svg>`
+    },
+    {
+      threshold: 30,
+      prize: 'New toy or book of their choice',
+      icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="19" width="30" height="20" rx="2.5"/>
+        <path d="M9 27 L39 27"/>
+        <path d="M24 19 L24 39"/>
+        <path d="M24 19 C 20 12, 13 12, 13 17 C 13 20, 18 20.5, 24 19 Z"/>
+        <path d="M24 19 C 28 12, 35 12, 35 17 C 35 20, 30 20.5, 24 19 Z"/>
+      </svg>`
+    },
+    {
+      threshold: 40,
+      prize: 'Fun outing — trampoline park or zoo',
+      icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="24" cy="21" r="13"/>
+        <path d="M24 8 L24 34 M11 21 L37 21 M15 11 L33 31 M33 11 L15 31"/>
+        <path d="M24 34 L24 41 M18 41 L30 41"/>
+      </svg>`
+    },
+    {
+      threshold: 50,
+      prize: 'Big prize — a special day, their choice',
+      icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M24 6 L29 18 L42 19 L32 27 L35 40 L24 33 L13 40 L16 27 L6 19 L19 18 Z" stroke-linejoin="round"/>
+      </svg>`
+    }
+  ];
+
+  const CHECK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L10 18 L20 6"/></svg>`;
+
+  const params = new URLSearchParams(window.location.search);
+  const hasCount = params.has('count');
+  const count = Math.max(0, parseInt(params.get('count') || '0', 10) || 0);
+
+  document.getElementById('countNumber').textContent = count;
+
+  const MAX = MILESTONES[MILESTONES.length - 1].threshold;
+  const nextMilestone = MILESTONES.find(m => count < m.threshold);
+  const ring = document.getElementById('ringProgress');
+  const CIRC = 2 * Math.PI * 46;
+  ring.style.strokeDasharray = String(CIRC);
+
+  const heroStatus = document.getElementById('heroStatus');
+  const heroHint = document.getElementById('heroHint');
+
+  if (!hasCount) {
+    heroStatus.textContent = 'Open this from the Bravery Shortcut to see the latest count.';
+    ring.style.strokeDashoffset = String(CIRC);
+  } else if (nextMilestone) {
+    const remaining = nextMilestone.threshold - count;
+    heroStatus.innerHTML = `<strong>${remaining}</strong> more brave ${remaining === 1 ? 'moment' : 'moments'} to go`;
+    heroHint.textContent = `Next up: ${nextMilestone.prize}`;
+    const ratio = Math.min(1, count / MAX);
+    ring.style.strokeDashoffset = String(CIRC * (1 - ratio));
+  } else {
+    heroStatus.textContent = 'Every prize earned! Time for something extra special.';
+    ring.style.strokeDashoffset = '0';
+  }
+
+  const list = document.getElementById('milestoneList');
+  MILESTONES.forEach(m => {
+    const done = count >= m.threshold;
+    const isCurrent = !done && nextMilestone && m.threshold === nextMilestone.threshold;
+    const state = done ? 'done' : isCurrent ? 'current' : 'upcoming';
+
+    const el = document.createElement('div');
+    el.className = `milestone milestone--${state}`;
+    el.innerHTML = `
+      <div class="milestone__node">${done ? CHECK_ICON.replace('width="24" height="24"', 'width="14" height="14"') : m.threshold}</div>
+      <div class="milestone__card">
+        <div class="milestone__icon">${m.icon}</div>
+        <div class="milestone__body">
+          <p class="milestone__threshold">${m.threshold} brave moments</p>
+          <p class="milestone__prize">${m.prize}</p>
+        </div>
+        <div class="milestone__check">${CHECK_ICON}</div>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+
+  // trail fill height, measured after layout
+  requestAnimationFrame(() => {
+    const nodes = document.querySelectorAll('.milestone__node');
+    const trail = document.querySelector('.trail');
+    const trailRect = trail.getBoundingClientRect();
+    let fillTo = 0;
+
+    if (hasCount) {
+      let lastDoneIndex = -1;
+      MILESTONES.forEach((m, i) => { if (count >= m.threshold) lastDoneIndex = i; });
+
+      if (lastDoneIndex === MILESTONES.length - 1) {
+        const lastNode = nodes[nodes.length - 1];
+        fillTo = lastNode.getBoundingClientRect().top - trailRect.top + lastNode.offsetHeight / 2;
+      } else if (lastDoneIndex >= 0 || count > 0) {
+        const idx = lastDoneIndex + 1;
+        const node = nodes[idx];
+        const prevThreshold = idx === 0 ? 0 : MILESTONES[idx - 1].threshold;
+        const span = MILESTONES[idx].threshold - prevThreshold;
+        const progressWithinSpan = (count - prevThreshold) / span;
+        const prevNode = idx === 0 ? null : nodes[idx - 1];
+        const prevY = prevNode
+          ? prevNode.getBoundingClientRect().top - trailRect.top + prevNode.offsetHeight / 2
+          : nodes[0].getBoundingClientRect().top - trailRect.top - 40;
+        const nodeY = node.getBoundingClientRect().top - trailRect.top + node.offsetHeight / 2;
+        fillTo = prevY + (nodeY - prevY) * progressWithinSpan;
+      }
+    }
+
+    document.getElementById('trailFill').style.height = Math.max(0, fillTo) + 'px';
+  });
+
+  // ambient starfield
+  const field = document.getElementById('starfield');
+  const STAR_COUNT = 60;
+  for (let i = 0; i < STAR_COUNT; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'star-dot';
+    const size = Math.random() * 2 + 1;
+    dot.style.width = size + 'px';
+    dot.style.height = size + 'px';
+    dot.style.left = Math.random() * 100 + '%';
+    dot.style.top = Math.random() * 100 + '%';
+    dot.style.animationDelay = (Math.random() * 4.5) + 's';
+    field.appendChild(dot);
+  }
+</script>
