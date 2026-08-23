@@ -1,0 +1,55 @@
+name: Mission Complete
+
+on:
+  repository_dispatch:
+    types: [mission-complete]
+
+permissions:
+  contents: write
+
+jobs:
+  mark-complete:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pixlet
+        run: |
+          curl -sL -o pixlet.tar.gz https://github.com/tidbyt/pixlet/releases/download/v0.34.0/pixlet_0.34.0_linux_amd64.tar.gz
+          tar -xzf pixlet.tar.gz
+          chmod +x pixlet
+
+      - name: Mark today's mission complete
+        working-directory: mission
+        run: |
+          jq '.completed = true' mission_queue.json > tmp.json && mv tmp.json mission_queue.json
+          CURRENT=$(jq -r '.current' mission_queue.json)
+          echo "MISSION=$CURRENT" >> "$GITHUB_ENV"
+          echo "Marked complete: $CURRENT"
+
+      - name: Render and push "done" state to Tidbyt
+        working-directory: mission
+        env:
+          TIDBYT_API_TOKEN: ${{ secrets.TIDBYT_API_TOKEN }}
+          TIDBYT_DEVICE_ID: inductively-enormous-plausible-waterbuck-668
+        run: |
+          ./pixlet render mission.star -o mission.webp challenge="$MISSION" done="true"
+          B64=$(base64 -w0 mission.webp)
+          cat > push_body.json <<EOF
+          {"deviceID":"$TIDBYT_DEVICE_ID","image":"$B64","installationID":"mission","background":false}
+          EOF
+          curl -s -w "\nHTTP_STATUS=%{http_code}\n" -X POST "https://api.tidbyt.com/v0/devices/$TIDBYT_DEVICE_ID/push" \
+            -H "Authorization: Bearer $TIDBYT_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data @push_body.json
+          rm -f push_body.json mission.webp
+
+      - name: Commit updated state
+        working-directory: mission
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add mission_queue.json
+          git diff --cached --quiet && echo "No change" && exit 0
+          git commit -m "Mission complete: $MISSION"
+          git push
