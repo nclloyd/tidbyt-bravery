@@ -1,6 +1,6 @@
 {
   "current": "Say hi to someone new",
-  "completed": false,
+  "completed": true,
   "queue": [
     "Ask for help today",
     "Say sorry if you need to",
