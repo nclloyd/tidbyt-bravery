@@ -1,8 +1,7 @@
 {
-  "current": "Bounce on a trampoline!",
-  "completed": true,
+  "current": "Say hi to someone new",
+  "completed": false,
   "queue": [
-    "Say hi to someone new",
     "Say sorry if you need to",
     "Give someone a compliment",
     "Ask a curious question",
