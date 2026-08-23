@@ -359,48 +359,46 @@
 <script>
   const MILESTONES = [
     {
-      threshold: 10,
-      prize: 'Trip to the ice cream shop',
+      threshold: 6,
+      prize: 'Stay up 30 minutes past bedtime',
       icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M16 20 L24 40 L32 20 Z"/>
-        <path d="M14 20 a10 9 0 0 1 20 0 Z"/>
-        <path d="M19 15.5 a3 3 0 0 1 5-2"/>
+        <path d="M28 10 A15 15 0 1 0 28 38 A11 11 0 0 1 28 10 Z"/>
+        <path d="M36 10 L36 15 M33.5 12.5 L38.5 12.5"/>
       </svg>`
     },
     {
-      threshold: 20,
-      prize: 'Family movie night, your pick',
+      threshold: 12,
+      prize: 'Pick dinner for the whole family',
       icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="7" y="14" width="34" height="24" rx="3"/>
-        <path d="M7 21 L41 21"/>
-        <path d="M13 14 L17 21 M22 14 L26 21 M31 14 L35 21"/>
+        <path d="M15 8 L15 40 M11.5 8 L11.5 15 A3.5 3.5 0 0 0 15 18.5 M18.5 8 L18.5 15 A3.5 3.5 0 0 1 15 18.5"/>
+        <path d="M33 8 C33 8 39 13 33 22 L33 40"/>
+      </svg>`
+    },
+    {
+      threshold: 18,
+      prize: 'Skip a chore of your choice',
+      icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 40 L28 12 L32 8"/>
+        <path d="M16 40 L10 40 L14 34 L20 34 Z"/>
+        <path d="M9 9 L39 39"/>
+      </svg>`
+    },
+    {
+      threshold: 24,
+      prize: "One-on-one hour with Mom or Dad, your pick",
+      icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M24 40 C10 28 6 18 14 12 C19 8 24 12 24 16 C24 12 29 8 34 12 C42 18 38 28 24 40 Z"/>
       </svg>`
     },
     {
       threshold: 30,
-      prize: 'New toy or book of your choice ($15)',
+      prize: 'A big surprise — something special, your choice',
       icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
         <rect x="9" y="19" width="30" height="20" rx="2.5"/>
         <path d="M9 27 L39 27"/>
         <path d="M24 19 L24 39"/>
         <path d="M24 19 C 20 12, 13 12, 13 17 C 13 20, 18 20.5, 24 19 Z"/>
         <path d="M24 19 C 28 12, 35 12, 35 17 C 35 20, 30 20.5, 24 19 Z"/>
-      </svg>`
-    },
-    {
-      threshold: 40,
-      prize: 'Fun outing — like Altitude or Kids Empire',
-      icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="24" cy="21" r="13"/>
-        <path d="M24 8 L24 34 M11 21 L37 21 M15 11 L33 31 M33 11 L15 31"/>
-        <path d="M24 34 L24 41 M18 41 L30 41"/>
-      </svg>`
-    },
-    {
-      threshold: 50,
-      prize: 'Big prize — a special day, your choice',
-      icon: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M24 6 L29 18 L42 19 L32 27 L35 40 L24 33 L13 40 L16 27 L6 19 L19 18 Z" stroke-linejoin="round"/>
       </svg>`
     }
   ];
