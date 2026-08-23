@@ -1,8 +1,7 @@
 {
-  "current": "Try a new food",
+  "current": "Say hi to someone new",
   "completed": false,
   "queue": [
-    "Say hi to someone new",
     "Ask for help today",
     "Say sorry if you need to",
     "Try a new move at the park",
@@ -15,6 +14,7 @@
     "Try a somersault",
     "Sleep with the light dimmer",
     "Clean up without being asked",
-    "Share your favorite toy"
+    "Share your favorite toy",
+    "Try a new food"
   ]
 }
