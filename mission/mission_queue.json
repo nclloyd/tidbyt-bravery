@@ -1,8 +1,7 @@
 {
-  "current": "Say hi to someone new",
+  "current": "Say sorry if you need to",
   "completed": false,
   "queue": [
-    "Say sorry if you need to",
     "Give someone a compliment",
     "Ask a curious question",
     "Stand up for a friend",
@@ -33,6 +32,7 @@
     "Wave at a neighbor",
     "Introduce yourself",
     "Raise your hand to answer",
-    "Tell a joke to someone"
+    "Tell a joke to someone",
+    "Say hi to someone new"
   ]
 }
