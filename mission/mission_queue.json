@@ -1,8 +1,7 @@
 {
-  "current": "Give someone a compliment",
+  "current": "Ask a curious question",
   "completed": false,
   "queue": [
-    "Ask a curious question",
     "Stand up for a friend",
     "Give an extra big hug",
     "Try tying your shoes solo",
@@ -33,6 +32,7 @@
     "Raise your hand to answer",
     "Tell a joke to someone",
     "Say hi to someone new",
-    "Say sorry if you need to"
+    "Say sorry if you need to",
+    "Give someone a compliment"
   ]
 }
