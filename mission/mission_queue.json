@@ -1,19 +1,18 @@
 {
-  "current": "Give an extra big hug",
+  "current": "Clean up without being asked",
   "completed": false,
   "queue": [
+    "Do 10 burpees before school",
+    "Be a helper to mommy",
     "Try tying your shoes solo",
     "Taste a new vegetable",
-    "Try a somersault",
+    "Try a cartwheel",
     "Sleep with the light dimmer",
-    "Clean up without being asked",
     "Share your favorite toy",
     "Try a new food",
     "Try a new book",
-    "Try a cartwheel",
     "Try jumping rope",
     "Try climbing something new",
-    "Try swimming without help",
     "Give a friend a high five",
     "Make someone laugh today",
     "Help set the table",
@@ -33,7 +32,8 @@
     "Say sorry if you need to",
     "Give someone a compliment",
     "Ask a curious question",
-    "Stand up for a friend"
+    "Stand up for a friend",
+    "Give an extra big hug"
   ],
   "lastAdvanced": "2026-08-30"
 }
