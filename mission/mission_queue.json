@@ -1,8 +1,7 @@
 {
-  "current": "Stand up for a friend",
+  "current": "Give an extra big hug",
   "completed": false,
   "queue": [
-    "Give an extra big hug",
     "Try tying your shoes solo",
     "Taste a new vegetable",
     "Try a somersault",
@@ -33,6 +32,8 @@
     "Say hi to someone new",
     "Say sorry if you need to",
     "Give someone a compliment",
-    "Ask a curious question"
-  ]
+    "Ask a curious question",
+    "Stand up for a friend"
+  ],
+  "lastAdvanced": "2026-08-30"
 }
