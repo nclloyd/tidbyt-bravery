@@ -15,13 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Skip duplicate DST trigger
+      - name: Skip if already advanced today
         if: github.event_name == 'schedule'
+        working-directory: mission
         run: |
-          HOUR=$(TZ="America/New_York" date +%H)
-          if [ "$HOUR" != "06" ]; then
-            echo "Not 6am ET right now (it's $HOUR:00 ET) — this is the other DST cron, skipping."
+          TODAY=$(TZ="America/New_York" date +%Y-%m-%d)
+          LAST=$(jq -r '.lastAdvanced // ""' mission_queue.json)
+          if [ "$TODAY" == "$LAST" ]; then
+            echo "Already advanced today ($TODAY) — this is the duplicate DST trigger (or a late-firing repeat), skipping."
             echo "SKIP=true" >> "$GITHUB_ENV"
+          else
+            echo "Not yet advanced today (today=$TODAY, last=$LAST) — proceeding regardless of what hour this actually fired."
           fi
 
       - name: Install pixlet
@@ -56,7 +60,10 @@ jobs:
 
           # Pop the front of the queue as today's mission
           NEW_CURRENT=$(jq -r '.queue[0]' mission_queue.json)
-          jq --arg nc "$NEW_CURRENT" '.current = $nc | .completed = false | .queue = .queue[1:]' mission_queue.json > tmp.json && mv tmp.json mission_queue.json
+          TODAY=$(TZ="America/New_York" date +%Y-%m-%d)
+          jq --arg nc "$NEW_CURRENT" --arg today "$TODAY" \
+            '.current = $nc | .completed = false | .queue = .queue[1:] | .lastAdvanced = $today' \
+            mission_queue.json > tmp.json && mv tmp.json mission_queue.json
           echo "Today's mission: $NEW_CURRENT"
           echo "MISSION=$NEW_CURRENT" >> "$GITHUB_ENV"
 
