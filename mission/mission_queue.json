@@ -1,8 +1,7 @@
 {
-  "current": "Clean up without being asked",
+  "current": "Do 10 burpees before school",
   "completed": false,
   "queue": [
-    "Do 10 burpees before school",
     "Be a helper to mommy",
     "Try tying your shoes solo",
     "Taste a new vegetable",
@@ -33,7 +32,8 @@
     "Give someone a compliment",
     "Ask a curious question",
     "Stand up for a friend",
-    "Give an extra big hug"
+    "Give an extra big hug",
+    "Clean up without being asked"
   ],
-  "lastAdvanced": "2026-08-30"
+  "lastAdvanced": "2026-08-31"
 }
