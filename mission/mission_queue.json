@@ -1,8 +1,7 @@
 {
-  "current": "Be a helper to mommy",
+  "current": "Try tying your shoes solo",
   "completed": false,
   "queue": [
-    "Try tying your shoes solo",
     "Taste a new vegetable",
     "Try a cartwheel",
     "Sleep with the light dimmer",
@@ -33,7 +32,8 @@
     "Stand up for a friend",
     "Give an extra big hug",
     "Clean up without being asked",
-    "Do 10 burpees before school"
+    "Do 10 burpees before school",
+    "Be a helper to mommy"
   ],
-  "lastAdvanced": "2026-09-01"
+  "lastAdvanced": "2026-09-02"
 }
