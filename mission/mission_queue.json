@@ -1,8 +1,7 @@
 {
-  "current": "Try tying your shoes solo",
+  "current": "Taste a new vegetable",
   "completed": false,
   "queue": [
-    "Taste a new vegetable",
     "Try a cartwheel",
     "Sleep with the light dimmer",
     "Share your favorite toy",
@@ -33,7 +32,8 @@
     "Give an extra big hug",
     "Clean up without being asked",
     "Do 10 burpees before school",
-    "Be a helper to mommy"
+    "Be a helper to mommy",
+    "Try tying your shoes solo"
   ],
-  "lastAdvanced": "2026-09-02"
+  "lastAdvanced": "2026-09-03"
 }
