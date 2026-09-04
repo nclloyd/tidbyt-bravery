@@ -11,6 +11,9 @@ on:
     - cron: '45 11 * * *'           # 6:45am EST
     - cron: '0,15,30 12 * * *'      # 7:00-7:30am EST
   workflow_dispatch: {}              # allows manual "Run workflow" testing any time
+  repository_dispatch:
+    types: [advance-mission]         # fired precisely by an iOS Personal Automation at 6am ET,
+                                      # since GitHub's own scheduler delays this repo by hours
 
 permissions:
   contents: write
