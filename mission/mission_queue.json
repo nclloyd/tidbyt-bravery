@@ -1,8 +1,7 @@
 {
-  "current": "Sleep with the light dimmer",
+  "current": "Share your favorite toy",
   "completed": false,
   "queue": [
-    "Share your favorite toy",
     "Try a new food",
     "Try a new book",
     "Try jumping rope",
@@ -33,7 +32,8 @@
     "Be a helper to mommy",
     "Try tying your shoes solo",
     "Taste a new vegetable",
-    "Try a cartwheel"
+    "Try a cartwheel",
+    "Sleep with the light dimmer"
   ],
-  "lastAdvanced": "2026-09-05"
+  "lastAdvanced": "2026-09-06"
 }
