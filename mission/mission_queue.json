@@ -1,8 +1,7 @@
 {
-  "current": "Try a new book",
+  "current": "Try jumping rope",
   "completed": false,
   "queue": [
-    "Try jumping rope",
     "Try climbing something new",
     "Give a friend a high five",
     "Make someone laugh today",
@@ -33,7 +32,8 @@
     "Try a cartwheel",
     "Sleep with the light dimmer",
     "Share your favorite toy",
-    "Try a new food"
+    "Try a new food",
+    "Try a new book"
   ],
-  "lastAdvanced": "2026-09-08"
+  "lastAdvanced": "2026-09-09"
 }
