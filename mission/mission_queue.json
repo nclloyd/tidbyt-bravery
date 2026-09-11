@@ -1,8 +1,7 @@
 {
-  "current": "Give a friend a high five",
+  "current": "Make someone laugh today",
   "completed": false,
   "queue": [
-    "Make someone laugh today",
     "Help set the table",
     "Write a note for someone",
     "Let someone go first",
@@ -33,7 +32,8 @@
     "Try a new food",
     "Try a new book",
     "Try jumping rope",
-    "Try climbing something new"
+    "Try climbing something new",
+    "Give a friend a high five"
   ],
   "lastAdvanced": "2026-09-11"
 }
