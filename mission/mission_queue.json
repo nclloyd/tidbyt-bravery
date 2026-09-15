@@ -1,8 +1,7 @@
 {
-  "current": "Let someone go first",
+  "current": "Give your dessert away",
   "completed": false,
   "queue": [
-    "Give your dessert away",
     "Tell someone you love them",
     "Draw a picture for someone",
     "Sleep without a nightlight",
@@ -33,7 +32,8 @@
     "Give a friend a high five",
     "Make someone laugh today",
     "Help set the table",
-    "Write a note for someone"
+    "Write a note for someone",
+    "Let someone go first"
   ],
-  "lastAdvanced": "2026-09-14"
+  "lastAdvanced": "2026-09-15"
 }
