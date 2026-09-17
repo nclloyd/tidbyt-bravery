@@ -1,8 +1,7 @@
 {
-  "current": "Tell someone you love them",
+  "current": "Draw a picture for someone",
   "completed": false,
   "queue": [
-    "Draw a picture for someone",
     "Sleep without a nightlight",
     "Brush your teeth solo",
     "Zip up your own jacket",
@@ -33,7 +32,8 @@
     "Help set the table",
     "Write a note for someone",
     "Let someone go first",
-    "Give your dessert away"
+    "Give your dessert away",
+    "Tell someone you love them"
   ],
-  "lastAdvanced": "2026-09-16"
+  "lastAdvanced": "2026-09-17"
 }
