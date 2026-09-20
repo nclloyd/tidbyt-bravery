@@ -1,8 +1,7 @@
 {
-  "current": "Brush your teeth solo",
+  "current": "Zip up your own jacket",
   "completed": false,
   "queue": [
-    "Zip up your own jacket",
     "Wave at a neighbor",
     "Introduce yourself",
     "Raise your hand to answer",
@@ -33,7 +32,8 @@
     "Give your dessert away",
     "Tell someone you love them",
     "Draw a picture for someone",
-    "Sleep without a nightlight"
+    "Sleep without a nightlight",
+    "Brush your teeth solo"
   ],
-  "lastAdvanced": "2026-09-19"
+  "lastAdvanced": "2026-09-20"
 }
