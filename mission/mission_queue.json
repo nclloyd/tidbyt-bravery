@@ -1,8 +1,7 @@
 {
-  "current": "Introduce yourself",
+  "current": "Raise your hand to answer",
   "completed": false,
   "queue": [
-    "Raise your hand to answer",
     "Tell a joke to someone",
     "Say hi to someone new",
     "Say sorry if you need to",
@@ -33,7 +32,8 @@
     "Sleep without a nightlight",
     "Brush your teeth solo",
     "Zip up your own jacket",
-    "Wave at a neighbor"
+    "Wave at a neighbor",
+    "Introduce yourself"
   ],
-  "lastAdvanced": "2026-09-22"
+  "lastAdvanced": "2026-09-23"
 }
