@@ -1,8 +1,7 @@
 {
-  "current": "Tell a joke to someone",
+  "current": "Say hi to someone new",
   "completed": false,
   "queue": [
-    "Say hi to someone new",
     "Say sorry if you need to",
     "Give someone a compliment",
     "Ask a curious question",
@@ -33,7 +32,8 @@
     "Zip up your own jacket",
     "Wave at a neighbor",
     "Introduce yourself",
-    "Raise your hand to answer"
+    "Raise your hand to answer",
+    "Tell a joke to someone"
   ],
-  "lastAdvanced": "2026-09-24"
+  "lastAdvanced": "2026-09-25"
 }
