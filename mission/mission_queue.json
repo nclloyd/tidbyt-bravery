@@ -1,8 +1,7 @@
 {
-  "current": "Say sorry if you need to",
+  "current": "Give someone a compliment",
   "completed": false,
   "queue": [
-    "Give someone a compliment",
     "Ask a curious question",
     "Stand up for a friend",
     "Give an extra big hug",
@@ -33,7 +32,8 @@
     "Introduce yourself",
     "Raise your hand to answer",
     "Tell a joke to someone",
-    "Say hi to someone new"
+    "Say hi to someone new",
+    "Say sorry if you need to"
   ],
-  "lastAdvanced": "2026-09-26"
+  "lastAdvanced": "2026-09-27"
 }
