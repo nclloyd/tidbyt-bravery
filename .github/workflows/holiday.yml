@@ -1,0 +1,75 @@
+name: Holiday Greeting
+
+on:
+  schedule:
+    # Each run just converges on "what should be showing today in ET", so extra
+    # runs are harmless. Early runs (just after midnight ET) usually land before
+    # wake-up despite GitHub firing this repo's crons hours late; later ones are
+    # backups in case a run gets dropped.
+    - cron: '5 4,5,9,12,15,18,21 * * *'
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [advance-mission]   # also rides along with the 6am iOS automation
+
+permissions:
+  contents: read
+
+jobs:
+  holiday:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Decide what to show today
+        id: decide
+        working-directory: holiday
+        run: |
+          python3 schedule.py > decision.json
+          cat decision.json
+          echo "action=$(jq -r .action decision.json)" >> "$GITHUB_OUTPUT"
+          echo "holiday=$(jq -r .holiday decision.json)" >> "$GITHUB_OUTPUT"
+          echo "days=$(jq -r .days decision.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Install pixlet
+        if: steps.decide.outputs.action == 'push'
+        working-directory: holiday
+        run: |
+          curl -sL -o pixlet.tar.gz https://github.com/tidbyt/pixlet/releases/download/v0.34.0/pixlet_0.34.0_linux_amd64.tar.gz
+          tar -xzf pixlet.tar.gz
+          chmod +x pixlet
+
+      - name: Render and push greeting
+        if: steps.decide.outputs.action == 'push'
+        working-directory: holiday
+        env:
+          TIDBYT_API_TOKEN: ${{ secrets.TIDBYT_API_TOKEN }}
+          TIDBYT_DEVICE_ID: inductively-enormous-plausible-waterbuck-668
+          HOLIDAY: ${{ steps.decide.outputs.holiday }}
+          DAYS: ${{ steps.decide.outputs.days }}
+        run: |
+          ./pixlet render holiday.star -o holiday.webp holiday="$HOLIDAY" days="$DAYS"
+          B64=$(base64 -w0 holiday.webp)
+          # background:true updates the app in rotation without interrupting
+          # whatever is on screen, so repeat runs through the day are invisible
+          printf '{"deviceID":"%s","image":"%s","installationID":"holiday","background":true}' \
+            "$TIDBYT_DEVICE_ID" "$B64" > push_body.json
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            "https://api.tidbyt.com/v0/devices/$TIDBYT_DEVICE_ID/push" \
+            -H "Authorization: Bearer $TIDBYT_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data @push_body.json)
+          echo "push status: $STATUS"
+          test "$STATUS" = "200"
+
+      - name: Remove greeting (not a holiday)
+        if: steps.decide.outputs.action == 'remove'
+        env:
+          TIDBYT_API_TOKEN: ${{ secrets.TIDBYT_API_TOKEN }}
+          TIDBYT_DEVICE_ID: inductively-enormous-plausible-waterbuck-668
+        run: |
+          # safe to repeat: removing an app that isn't installed also returns 200
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
+            "https://api.tidbyt.com/v0/devices/$TIDBYT_DEVICE_ID/installations/holiday" \
+            -H "Authorization: Bearer $TIDBYT_API_TOKEN")
+          echo "delete status: $STATUS"
+          test "$STATUS" = "200"

@@ -12,6 +12,8 @@ load("encoding/base64.star", "base64")
 
 GOLD = "#FFD23C"
 WHITE = "#FFFFFF"
+RED = "#FF5A5A"
+GREEN = "#5BE37D"
 
 HOLIDAYS = {
     "thanksgiving": {
@@ -19,13 +21,30 @@ HOLIDAYS = {
         "lines": ["HAPPY", "TURKEY DAY", "LLOYDS!"],
         "colors": [GOLD, WHITE, GOLD],
     },
+    "christmas": {
+        "sprite": TREE,
+        "lines": ["MERRY", "CHRISTMAS", "LLOYDS!"],
+        "colors": [RED, WHITE, GREEN],
+    },
+    # first line is filled in from the "days" config: "28 SLEEPS" / "1 SLEEP"
+    "christmas_countdown": {
+        "sprite": TREE,
+        "lines": ["", "TILL", "CHRISTMAS!"],
+        "colors": [GOLD, WHITE, RED],
+    },
 }
 
 def main(config):
-    holiday = HOLIDAYS.get(config.get("holiday", "thanksgiving"), HOLIDAYS["thanksgiving"])
+    key = config.get("holiday", "thanksgiving")
+    holiday = HOLIDAYS.get(key, HOLIDAYS["thanksgiving"])
+    lines = list(holiday["lines"])
+
+    if key == "christmas_countdown":
+        days = int(config.get("days", "1"))
+        lines[0] = "%d SLEEP" % days if days == 1 else "%d SLEEPS" % days
 
     text_rows = []
-    for i, line in enumerate(holiday["lines"]):
+    for i, line in enumerate(lines):
         if i > 0:
             text_rows.append(render.Box(width = 1, height = 3))
         text_rows.append(render.Text(content = line, font = "CG-pixel-3x5-mono", color = holiday["colors"][i]))

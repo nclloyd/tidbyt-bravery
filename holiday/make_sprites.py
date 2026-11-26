@@ -71,6 +71,37 @@ def turkey():
     return [turkey_frame(tail[i], bob[i], head_dx[i], left_up[i]) for i in range(8)]
 
 
+# --- Christmas: tree with twinkling star and color-cycling lights (18x22) ----
+
+GREEN, DARK_GREEN, TRUNK = (40, 150, 65), (25, 105, 45), (120, 70, 35)
+STAR, STAR_DIM = (255, 215, 60), (200, 150, 30)
+LIGHTS = [(255, 70, 70), (255, 210, 60), (80, 150, 255), (255, 255, 255)]
+LIGHT_SPOTS = [(9, 6), (7, 9), (11, 10), (5, 13), (9, 12), (13, 14), (3, 17), (7, 16), (11, 17), (15, 17)]
+
+
+def tree_frame(f):
+    img = Image.new("RGB", (18, 22), (0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rectangle([8, 19, 10, 21], fill=TRUNK)
+    for apex, base_y, half in ((3, 9, 4), (6, 14, 6), (10, 18, 8)):
+        d.polygon([(9, apex), (9 - half, base_y), (9 + half, base_y)], fill=GREEN)
+        d.line([(9 - half, base_y), (9 + half, base_y)], fill=DARK_GREEN)
+    # lights shift one color per frame, so consecutive frames always differ
+    for i, (x, y) in enumerate(LIGHT_SPOTS):
+        d.point((x, y), fill=LIGHTS[(i + f) % len(LIGHTS)])
+    if f % 2 == 0:
+        for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)):
+            d.point((9 + dx, 1 + dy), fill=STAR)
+    else:
+        d.point((9, 1), fill=STAR_DIM)
+    return img
+
+
+def tree():
+    return [tree_frame(f) for f in range(8)]
+
+
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     save_gif(turkey(), "turkey.gif")
+    save_gif(tree(), "tree.gif")
