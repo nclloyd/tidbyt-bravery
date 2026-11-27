@@ -103,4 +103,11 @@ jobs:
           git add mission_queue.json
           git diff --cached --quiet && echo "No change" && exit 0
           git commit -m "Daily mission: $MISSION"
-          git push
+          # Another workflow may have pushed in the meantime (e.g. "Mission Complete!"
+          # fires the count update at the same instant). They touch different files,
+          # so rebasing onto theirs is always clean; retry a few times before failing.
+          for i in 1 2 3 4 5; do
+            git pull --rebase -q && git push && exit 0
+            sleep $((i * 3))
+          done
+          exit 1
