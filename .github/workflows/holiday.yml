@@ -2,11 +2,12 @@ name: Holiday Greeting
 
 on:
   schedule:
-    # Each run just converges on "what should be showing today in ET", so extra
-    # runs are harmless. Early runs (just after midnight ET) usually land before
-    # wake-up despite GitHub firing this repo's crons hours late; later ones are
-    # backups in case a run gets dropped.
-    - cron: '5 4,5,9,12,15,18,21 * * *'
+    # GitHub fires this repo's crons hours late and drops many of them, worst
+    # near the top of the hour, so: odd minutes, lots of overnight attempts
+    # (04:37-11:37 UTC = ~11:37pm-6:37am ET), and a few daytime backups.
+    # Each run is safe to repeat -- see the job's skip/converge logic.
+    - cron: '37 4,5,6,7,8,9,10,11 * * *'
+    - cron: '23 13,16,19,22 * * *'
   workflow_dispatch: {}
   repository_dispatch:
     types: [advance-mission]   # also rides along with the 6am iOS automation
